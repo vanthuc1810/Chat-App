@@ -1,31 +1,46 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: Node.js CI
 
-name: Chat App CI
-
+# Kích hoạt workflow khi push hoặc pull request vào branch main
 on:
   push:
-    branches: [ "master" ]
+    branches: [main]
   pull_request:
-    branches: [ "master" ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x, 24.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'
-    - run: pnpm ci
-    - run: pnpm build --if-present
-    - run: pnpm test
+      # 1. Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Setup Node.js theo matrix version
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'   # cache pnpm dependencies
+
+      # 3. Setup pnpm version 10
+      - name: Setup pnpm v10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # 4. Install dependencies bằng pnpm
+      - name: Install dependencies
+        run: pnpm install
+
+      # 5. Build project (nếu có)
+      - name: Build
+        run: pnpm run build --if-present
+
+      # 6. Run tests
+      - name: Run tests
+        run: pnpm test
