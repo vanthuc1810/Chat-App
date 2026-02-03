@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
 import { useState } from "react";
 import { ChatInput } from "../components/chat/ChatInput";
 
-export default function ChatPage() {
+export const ChatPage = () => {
   const [value, setValue] = useState("");
 
   return (
@@ -18,4 +18,4 @@ export default function ChatPage() {
       </div>
     </>
   );
-}
+};
