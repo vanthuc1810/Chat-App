@@ -22,3 +22,22 @@ jobs:
 
       - name: Lint commits
         run: npx commitlint --last
+  notify:
+    name: Notify on Lint Failure
+    needs: commitlint
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Notify Discord Error
+        if: failure()
+        uses: discord-actions/message@v2
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            🚀 **Run Lint commit failure**
+
+            👤 Author: ${{ github.actor }}
+            📝 Title: ${{ github.event.pull_request.title }}
+            🔗 URL: ${{ github.event.pull_request.html_url }}
+            🌿 Branch: ${{ github.head_ref }}
