@@ -37,11 +37,23 @@ jobs:
         uses: discord-actions/message@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Hello, has a Successful Build"
+          message: |
+            🚀 **Run CI for Build and Test success**
+
+            👤 Author: ${{ github.actor }}
+            📝 Title: ${{ github.event.pull_request.title }}
+            🔗 URL: ${{ github.event.pull_request.html_url }}
+            🌿 Branch: ${{ github.head_ref }}
 
       - name: Notify Discord Error
         if: failure()
         uses: discord-actions/message@v2
         with:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: "Hello, has a Error Build"
+          message: |
+            🚀 **Run CI for Build and Test failure**
+
+            👤 Author: ${{ github.actor }}
+            📝 Title: ${{ github.event.pull_request.title }}
+            🔗 URL: ${{ github.event.pull_request.html_url }}
+            🌿 Branch: ${{ github.head_ref }}
