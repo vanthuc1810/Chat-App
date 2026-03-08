@@ -29,5 +29,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review # Comment trực tiếp trên dòng code
           filter_mode: added # Chỉ báo lỗi trên code mới thêm
-          fail_on_error: true # Chỉ fail build khi có lỗi 'error'
+          fail_level: true # Chỉ fail build khi có lỗi 'error'
           eslint_flags: "."
