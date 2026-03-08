@@ -1,13 +1,14 @@
 name: Linting
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   eslint-review:
     name: runner / eslint
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: write # BẮT BUỘC để bot có quyền comment vào PR
+      pull-requests: write # Quyền tối thiểu cần thiết để comment vào PR
 
     steps:
       - name: Checkout code
@@ -17,14 +18,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm" # Caching tự động cho npm (tối ưu hóa bước install)
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci # Dùng 'ci' thay cho 'install' để đảm bảo tính ổn định và tốc độ
 
       - name: Run ESLint with Reviewdog
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review # Comment trực tiếp vào dòng code trong PR
-          filter_mode: added # Chỉ comment vào các dòng code mới sửa đổi trong PR
-          eslint_flags: "." # Thư mục chứa code cần quét
+          reporter: github-pr-review # Comment trực tiếp trên dòng code
+          filter_mode: added # Chỉ báo lỗi trên code mới thêm
+          fail_on_error: true # Chỉ fail build khi có lỗi 'error'
+          eslint_flags: "."
