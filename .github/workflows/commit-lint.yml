@@ -8,17 +8,23 @@ on:
 
 jobs:
   commitlint:
-    name: Lint Commit Messages
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install deps
-        run: npm ci
+      - run: npm ci
 
-      - name: Lint commits
-        run: npx commitlint --last
+      - name: Lint PR commits
+        if: github.event_name == 'pull_request'
+        run: |
+          npx commitlint \
+            --from=${{ github.event.pull_request.base.sha }} \
+            --to=${{ github.event.pull_request.head.sha }}
+
+      - name: Lint push commit
+        if: github.event_name == 'push'
+        run: |
+          npx commitlint --from=HEAD~1 --to=HEAD
